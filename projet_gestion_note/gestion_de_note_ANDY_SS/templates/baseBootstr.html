@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'assets/bootstrap.min.css' %}">
+  <script src="{% static 'assets/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/popper.min.js' %}"></script>
+  <script src="{% static 'assets/bootstrap.min.js' %}"></script>
+  <script src="{% static 'assets/sweetalert2.all.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'vendor/fontawesome-free/css/all.min.css' %}">
+  {% block extras_assets %}
+
+  {% endblock %}
+</head>
+<body>
+  {% block navBar %}
+
+  {% endblock %}
+
+  <div class="container">
+    {% block content %}
+
+    {% endblock %}
+  </div>
+
+</body>
+</html>

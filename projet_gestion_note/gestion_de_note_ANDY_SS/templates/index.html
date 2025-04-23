@@ -1,0 +1,52 @@
+{% extends 'baseBootstr.html' %}
+
+{% block title %}
+Page principale
+{% endblock %}
+
+{% block extras_assets %}
+    {% block extras_assets1 %}
+
+    {% endblock %}
+{% endblock %}
+
+{% block navBar %}
+    {% if request.session.role == "prof" %}
+        {% include 'navbar.html' with lien1=0 lien2=1 lien3=1 lien4=1 %}<br><br>
+    {% elif request.session.role == "etudiant" %}
+        {% include 'navbar.html' with classeID_=classeID lien1=1 lien2=1 lien3=0 lien4=0 %}<br><br>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="jumbotron" id="descri">
+        <p>Bienvenu {{request.session.utilisateur}}</p>
+        <p>Rôle: {{request.session.role}}</p>
+        <p>Classe: {{classeID}}</p>
+        <h1>Description: </h1>
+        <p>Voici l'application de gestion de note des étudiants par classe et par matière.</p>
+        <p>Attention... Lorsque vous ajouter un(e) étudiant(e), veuillez cliquer sur la partie *mes notes* dans la barre de navigation pour initialiser les notes à 0.</p>
+        <p>En tant que prof, vous pouvez créer des matière, renommer des matière et aussi supprimer des matières. Néanmoins chaque
+            prof a ses propres matières. Les profs peuvent aussi modifier les notes des étudiants.
+        </p>
+        <p>
+            En tant qu'étudiants, vous pouvez voir la liste des classes, vous pouvez aussi voir vos notes par matière, et votre
+            moyenne générale. Les étudiants n'ont pas accès aux modifications de matière ou de note...
+        </p>
+    </div>
+    {% block extras_content %}
+
+    {% endblock %}
+    
+    {% if request.session.utilisateur != '' %}
+    <!-- <script>
+      Swal.fire({
+          title: "Connexion réussi !",
+          text: "Vous vous êtes connectés avec succès !",
+          icon: "success"
+      });
+    </script> -->
+    {% endif %}
+
+{% endblock %}

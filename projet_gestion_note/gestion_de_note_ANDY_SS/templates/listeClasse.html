@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+
+    {% block extras_assets1 %}
+    <script>
+        $(document).ready(function(){
+            $("#descri").fadeOut();
+        });
+        function slide_(panel_ID){
+            $(panel_ID).slideToggle("slow");
+        }
+    </script>
+    <style> 
+        .panel_, .flip_ {
+        padding: 4px;
+        text-align: center;
+        background-color: #e5eecc;
+        border: solid 1px #c3c3c3;
+        }
+
+        .fa-user::before {
+            content: '\f2bb';
+        }
+        
+        .panel_ {
+        padding: 50px;
+        display: none;
+        }
+    </style>
+    {% endblock %}
+
+    {% block extras_content %}
+        <br><br>
+        <h2>Ici s'affiche la liste de toutes les classes: </h2>
+        <p>Veuillez cliquer sur la classe pour afficher les étudiants</p>
+        {% for x in classe %}
+            <div class="flip_" onclick="slide_('#p{{x.id}}')" >{{x.niveau}} {{x.filiere}} {{x.groupe}}</div>
+            <div class="panel_" id="p{{x.id}}">
+                {% for y in etudiant %}
+                    {% if y.classeID_id == x.id %}
+                        <p><i class="fas fa-w fa-user-graduate" style ="font-size:24px; color: grey;"></i> {{y.nom}} {{y.prenom}}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endblock %}

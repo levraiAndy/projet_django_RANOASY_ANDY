@@ -1,0 +1,65 @@
+{% extends 'baseBootstr.html' %}
+
+{% block title %}
+Log in
+{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-center">
+      <div>
+        <h2>Authentification :</h2>
+        <p>Bienvenu ! Saisissez vos informations pour continuer:</p>
+      </div>
+  </div>
+<div class="d-flex justify-content-center">
+  <form action="{% url 'authentifier' %}" class="was-validated" method="post">
+
+    {% csrf_token %}
+      <div class="form-group">
+        <label for="">Nom :</label>
+        <input type="text" class="form-control" placeholder="" name="nom" required>
+        <div class="valid-feedback">Validé</div>
+        <div class="invalid-feedback">Veuillez remplir ce champ.</div>
+      </div>
+    
+      <div class="form-group">
+        <label for="">Prenom:</label>
+        <input type="text" class="form-control" placeholder="" name="prenom" required>
+        <div class="valid-feedback">Validé</div>
+        <div class="invalid-feedback">Veuillez remplir ce champ.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="">Mot de passe:</label>
+        <input type="password" class="form-control" placeholder="" name="mdp" required>
+        <div class="valid-feedback">Validé</div>
+        <div class="invalid-feedback">Mot de passe trôp court.</div>
+      </div>
+
+      <div class="form-group">
+        <select class="form-control" name="type">
+            <option selected value="prof" >Prof</option>
+            <option value="etudiant">Etudiant</option>
+          </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Se connecter</button>
+
+  </form>
+</div><br>
+
+  <div class="d-flex justify-content-center">
+    <a href="{% url 'pageAjouterCompte' %}" class="btn btn-secondary">Créer un compte ?</a>
+  </div>
+
+    {% if exist == 'nope' %}
+    <script>
+      Swal.fire({
+          title: "Echec de l'authentification !",
+          text: "Firstname ou lastname non existant !",
+          icon: "error"
+      });
+    </script>
+    {% endif %}
+
+{% endblock %}

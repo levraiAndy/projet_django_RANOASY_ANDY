@@ -1,0 +1,69 @@
+{% extends 'baseBootstr.html' %}
+
+{% block title %}
+Créer compte
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center">
+  <form action="{% url 'ajouterCompte' %}" class="was-validated" method="post">
+    <h2>Création de compte :</h2>
+  <p>Bienvenu ! Saisissez vos informations pour continuer:</p>
+
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="uname">Nom :</label>
+      <input type="text" class="form-control" placeholder="" name="nom" required>
+      <div class="valid-feedback">Validé</div>
+      <div class="invalid-feedback">Veuillez remplir ce champ.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="pwd">Prenom:</label>
+      <input type="text" class="form-control" placeholder="" name="prenom" required>
+      <div class="valid-feedback">Validé</div>
+      <div class="invalid-feedback">Veuillez remplir ce champ.</div>
+    </div>
+
+    <div class="form-group">
+        <label for="pwd">Mot de passe:</label>
+        <input type="password" class="form-control" placeholder="" name="mdp" required>
+        <div class="valid-feedback">Validé</div>
+        <div class="invalid-feedback">Mot de passe trôp court.</div>
+      </div>
+
+    <div class="form-group">
+        <select class="form-control" name="type" required>
+            <option selected disabled value="">Selectionnez votre type</option>
+            <option value="prof">Prof</option>
+            <option value="etudiant">Etudiant</option>
+          </select>
+    </div>
+
+    <div class="form-group" style="display: none;" id="classe">
+      <p>Selectionnez votre classe</p>
+        <select class="form-control" name="classe">
+
+            {% for x in classe %}
+            <option value="{{x.id}}">{{x.niveau}} {{x.filiere}} {{x.groupe}}</option>
+            {% endfor %}
+          </select>
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Créer</button>
+  </form>
+  </div><br>
+<a href="{% url 'login' %}" class="btn btn-danger">Retour</a>
+  <script>
+    $("select[name=type]").change(function() {
+        if ($(this).val() === "etudiant") {
+            $("#classe").show();
+        } else {
+            $("#classe").hide();
+        }
+    });
+  </script>
+  {% endblock %}

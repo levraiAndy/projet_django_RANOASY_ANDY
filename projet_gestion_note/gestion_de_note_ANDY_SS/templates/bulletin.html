@@ -1,0 +1,38 @@
+{% extends 'index.html' %}
+
+    {% block extras_assets1 %}
+    <script>
+        $(document).ready(function(){
+            $("#descri").fadeOut();
+        });
+    </script>
+    {% endblock %}
+
+    {% block extras_content %}
+
+    <h2>Voici votre bulletin: </h2>
+    <table class="table table-striped" id="#tab">
+        <thead>
+          <tr>
+            <th>Matière</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for x in matiere %}
+                <tr>
+                    <td>{{x.libelle}}</td>
+                    {% for y in note %}
+                        {% if y.matiereID_id == x.id %}
+                            <td>{{y.note}}/20</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      <p>Votre moyenne est : {{moyenne}}</p>
+      <p>Mention : {{mention}}</p>
+      <p>Veuillez recharger la page si vos notes ne s'affichent pas.</p>
+
+    {% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'index.html' %}
+
+    {% block extras_assets1 %}
+    
+    {% endblock %}
+
+    {% block extras_content %}
+        <br><br>
+        <h2>Ici, en tant que prof, vous pouvez gérer vos matières: </h2>
+        <form action="{% url 'ajouterMatiere' %}" method="post" class="was-validated">
+
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="">Libellé :</label>
+                <input type="text" class="form-control"  name="libelle" required>
+                <div class="valid-feedback">Validé</div>
+                <div class="invalid-feedback">Veuillez remplir ce champ.</div>
+            </div>
+
+            <div class="form-group">
+                <select class="form-control" name="classeID" required>
+                    <option selected disabled value="">Selectionnez la classe</option>
+                    {% for x in classe %}
+                        <option value="{{x.id}}">{{x.niveau}} {{x.filiere}} {{x.groupe}}</option>
+                    {% endfor %}
+                  </select>
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Ajouter une nouvelle matière</button>
+        </form>
+
+        <table class="table table-striped" id="#tab">
+            <thead>
+              <tr>
+                <th>Libelle</th>
+                <th>Classe</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for x in matiere %}
+                    <tr>
+                        <td>{{x.libelle}}</td>
+                        {% for y in classe %}
+                            {% if y.id == x.classeID_id %}
+                                <td>{{y.niveau}} {{y.filiere}} {{y.groupe}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{x.id}}">
+                                Mettre à jour
+                              </button>
+                            <a href="{% url 'supprimerMatiere' x.id %}" class="btn btn-danger">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+
+          {% for x in matiere %}
+          <div class="modal fade" id="myModal{{x.id}}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+              
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Mise à jour: </h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form action="{% url 'mettreAjourMatiere' x.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="text" name="libelle" class="form-control" placeholder="Libelle" required value="{{x.libelle}}">
+                        <select class="form-control" name="classeID" required>
+                          {% for y in classe %}
+                            {% if y.id == x.classeID_id %}
+                                <option value="{{y.id}}" selected>{{y.niveau}} {{y.filiere}} {{y.groupe}}</option>
+                            {% else %}
+                                <option value="{{y.id}}" >{{y.niveau}} {{y.filiere}} {{y.groupe}}</option>
+                            {% endif %}
+                          {% endfor %}
+                        </select>
+                        <input type="submit" class="btn btn-primary">
+                    </form>
+                </div>
+                
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+          <script>
+            $(document).ready(function(){
+                $("#descri").fadeOut();
+                // alert($('#tab tbody tr').length);
+                if($('#tab tbody tr').length === 0) {
+                    $('#tab tbody').append('<tr><td colspan="2">Vide</td></tr>');
+                }
+            });
+        </script>
+
+        {% if message == "mis_a_jour" %}
+            <script>
+                Swal.fire({
+                    title: "Mise à jour réussie !",
+                    text: "La mise à jour a été effectuée avec succès !",
+                    icon: "success"
+                });
+            </script>
+        {% endif %}
+        
+
+    {% endblock %}
