@@ -1,0 +1,166 @@
+{% extends 'index.html' %}
+
+    {% block extras_assets1 %}
+    <script>
+        $(document).ready(function(){
+            $("#descri").fadeOut();
+            url__ = []
+            $("span").each(function(){
+                url__.push(`http://127.0.0.1:8000/mettreAjourNote/${$(this).text()}`);
+            });
+            console.log(url__);
+        });
+    </script>
+    {% endblock %}
+
+
+    {% block extras_content %}
+        <h2>En tant que prof vous pouvez modifier la note des étudiants dans votre matière: </h2>
+        <p>Voici vos matières où vous pouvez changer les notes: </p>
+        <ul>
+            {% for x in matiere %}
+                {% if x.profID_id == request.session.id%}
+                    <li class="mat">{{x.libelle}}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <p id="pasDeMat"></p>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Classe</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for x in etudiant %}
+                    <tr>
+                        <td>{{x.nom}}</td>
+                        <td>{{x.prenom}}</td>
+                        {% for y in classe %}
+                            {% if y.id == x.classeID_id %}
+                                <td><span id="span{{x.id}}" style="display: none;">{{y.id}}</span> {{y.niveau}} {{y.filiere}} {{y.groupe}}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal{{x.id}}">
+                                Modifier note
+                              </button>
+                        </td>
+                        
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+
+
+
+          {% for x in etudiant %}
+          <div class="modal fade" id="myModal{{x.id}}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+              
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Voici les notes: </h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form action="{% url 'mettreAjourNote' x.id %}" method="post">
+                        {% csrf_token %}
+                        {% for y in matiere %}
+                            {% for z in note %}
+                                {% if z.etudiantID_id == x.id and z.matiereID_id == y.id %}
+                                    <label for="">{{y.libelle}}: </label>
+                                    <p id="p{{x.id}}{{y.id}}">{{z.note}}</p>
+                                    <input type="hidden" name="{{y.id}}" value="{{z.note}}" id="i{{x.id}}{{y.id}}">
+                    <!-- RRR NNN SAND -->
+
+
+                                    <i class="fas fa-w fa-minus-square" style ="color: red; font-size: 26px;" onclick="minus_('i{{x.id}}{{y.id}}','p{{x.id}}{{y.id}}','{{y.libelle}}')"></i>
+                                    <i class="fas fa-w fa-plus-square" style ="color: green; font-size: 26px;" onclick="plus_('i{{x.id}}{{y.id}}','p{{x.id}}{{y.id}}','{{y.libelle}}')"></i><br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary">Modifier</button>
+
+                    </form>
+                </div>
+                
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+                </div>
+            </div>
+        </div>
+                {% endfor %}
+
+                {% if mise_a_jour == "OK" %}
+                    <script>
+                        Swal.fire({
+                                title: "Mise à jour réussi !",
+                                text: "Mise à jour de note réussi avec succès !",
+                                icon: "success"
+                            });
+                    </script>
+                {% endif %}
+                <script>
+                    // $(document).ready(function(){
+                    //     i=0;
+                    //     $("form").each(function(){
+                    //         $(this).attr("action", url__[i]);
+                    //         i++;
+                    //     });
+                    // });
+                    // var unique = new Set();
+                    var tabMat = []
+                    var listMatiere = $("#listeMatiere li").toArray();
+                    $(".mat").each(function(){
+                        // if(!unique.has($(this).text())){
+                        //     unique.add($(this).text())
+                        // }
+                        tabMat.push($(this).text())
+                    });
+                    // var tabMat = Array.from(unique);
+                    console.log(tabMat);
+                    if(tabMat.length ==0){
+                        $("#pasDeMat").text("Vous n'avez pas encore de matière pour l'instant. Veuillez ajouter une matière dans gestion matière.");
+                    }
+        
+                    function minus_(id,p,mat){
+                        if($.inArray(mat, tabMat) !== -1){
+                            if($(`#${id}`).val() > 0 && $(`#${p}`).text() > 0 ){
+                                $(`#${id}`).val( parseInt( $(`#${id}`).val() ) -1);
+                                $(`#${p}`).text( parseInt( $(`#${p}`).text() ) -1);
+                            }
+                        }else{
+                            Swal.fire({
+                                title: "Matière non autorisé !",
+                                text: "Vous ne pouvez pas modifier cette note car ce n'est pas votre matière !",
+                                icon: "warning"
+                            });
+                        }
+                    }
+        
+                    function plus_(id,p,mat){
+                        if($.inArray(mat, tabMat) !== -1){
+                            if($(`#${id}`).val() < 20 && $(`#${p}`).text() < 20 ){
+                                $(`#${id}`).val( parseInt( $(`#${id}`).val() ) +1);
+                                $(`#${p}`).text( parseInt( $(`#${p}`).text() ) +1);
+                            }
+                        }else{
+                            Swal.fire({
+                                title: "Matière non autorisé !",
+                                text: "Vous ne pouvez pas modifier cette note car ce n'est pas votre matière !",
+                                icon: "warning"
+                            });
+                        }
+                    }
+                </script>
+    {% endblock %}
